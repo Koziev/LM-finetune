@@ -1,0 +1,13 @@
+python finetune_chitchat_fredt5_with_trainer.py \
+ --optim "adafactor" \
+ --learning_rate 1e-4 \
+ --lr_scheduler_type constant \
+ --per_gpu_train_batch_size 6 \
+ --gradient_checkpointing 0 \
+ --gradient_accumulation_steps 8 \
+ --num_train_epochs 1 \
+ --report_to tensorboard \
+ --logging_strategy steps \
+ --logging_steps 500 \
+ --output_dir ~/polygon/chatbot/tmp/fredt5_chitchat \
+ --save_strategy no
