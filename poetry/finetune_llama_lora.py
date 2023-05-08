@@ -168,7 +168,7 @@ class LoRaArguments:
     #         "lora_dropout": 0.10,
     r: Optional[int] = field(
         default=8
-    ),
+    )
 
     lora_alpha: Optional[int] = field(
       default=16
