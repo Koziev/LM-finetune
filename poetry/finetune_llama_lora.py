@@ -161,6 +161,24 @@ class DataSetArguments:
     )
 
 
+@dataclass
+class LoRaArguments:
+    #         "r": 8,
+    #         "lora_alpha": 16,
+    #         "lora_dropout": 0.10,
+    r: Optional[int] = field(
+        default=8
+    ),
+
+    lora_alpha: Optional[int] = field(
+      default=16
+    )
+
+    lora_dropout: Optional[float] = field(
+        default=0.10
+    )
+
+
 class MyPrinterCallback(TrainerCallback):
     def __init__(self, filepath):
         self.wrt = open(filepath, 'w')
@@ -202,13 +220,13 @@ def fix_model(model, tokenizer, use_resize=True):
 
 
 if __name__ == '__main__':
-    parser = HfArgumentParser((ModelArguments, DataSetArguments, TrainingArguments))
-    model_args, data_args, training_args = parser.parse_args_into_dataclasses()
+    parser = HfArgumentParser((ModelArguments, DataSetArguments, TrainingArguments, LoRaArguments))
+    model_args, data_args, training_args, lora_args = parser.parse_args_into_dataclasses()
 
     lora_config = LoraConfig(**{
-        "r": 8,
-        "lora_alpha": 16,
-        "lora_dropout": 0.10,
+        "r": lora_args.r,
+        "lora_alpha": lora_args.lora_alpha,
+        "lora_dropout": lora_args.lora_dropout,
         "bias": "none",
         "target_modules": ["q_proj", "v_proj"],
         "task_type": "CAUSAL_LM"
