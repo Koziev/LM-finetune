@@ -166,7 +166,7 @@ class LoRaArguments:
     #         "r": 8,
     #         "lora_alpha": 16,
     #         "lora_dropout": 0.10,
-    r: Optional[int] = field(
+    lora_r: Optional[int] = field(
         default=8
     )
 
@@ -224,7 +224,7 @@ if __name__ == '__main__':
     model_args, data_args, training_args, lora_args = parser.parse_args_into_dataclasses()
 
     lora_config = LoraConfig(**{
-        "r": lora_args.r,
+        "r": lora_args.lora_r,
         "lora_alpha": lora_args.lora_alpha,
         "lora_dropout": lora_args.lora_dropout,
         "bias": "none",
