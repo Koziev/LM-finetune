@@ -193,7 +193,7 @@ if __name__ == '__main__':
 
     logger.info('Loading tokenizer "%s"', model_args.model_name_or_path)
 
-    tokenizer = transformers.GPT2Tokenizer.from_pretrained(model_args.model_name_or_path)
+    tokenizer = transformers.AutoTokenizer.from_pretrained(model_args.model_name_or_path)
 
     tokenizer.add_special_tokens({'bos_token': '<s>', 'eos_token': '</s>', 'pad_token': '<pad>'})
     tokenizer.save_pretrained(training_args.output_dir)
@@ -222,7 +222,7 @@ if __name__ == '__main__':
 
     train_dataset = FinetuneDataset(train_samples, tokenizer)
 
-    printer = MyPrinterCallback(os.path.join(proj_dir, 'tmp', 'finetune_rugpt13b.loss.log'))
+    printer = MyPrinterCallback(os.path.join(training_args.output_dir, 'finetune_rugpt13b.loss.log'))
     trainer = Trainer(
         model=model,
         args=training_args,
