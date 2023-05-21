@@ -51,7 +51,7 @@ def pad_sequence(sequence, pad_id, max_len):
         return sequence
 
 
-def load_samples(data_args, tokenizer):
+def load_samples(data_args, tokenizer, model_args):
     samples = []
     with open(data_args.dataset_path, 'r') as f:
         for sample_str in f:
@@ -76,6 +76,11 @@ def load_samples(data_args, tokenizer):
 
                     # 29.04.2023 ограничим 2 первым катренами
                     output_text = '\n\n'.join(output_text.split('\n\n')[:2])
+
+                if 'xglm' in model_args.model_name_or_path.lower():
+                    # 21.05.2023 почему-то токенизатор XGLM иногда теряет переводы строк.
+                    # Поэтому заменим на особое сочетание, которое при генерации будем заменять обратно на \n
+                    output_text = output_text.replace('\n', '\\n')
 
                 input_tokens = tokenizer.encode(prompt, add_special_tokens=False)
                 output_tokens = tokenizer.encode(output_text, add_special_tokens=False)
@@ -238,12 +243,12 @@ if __name__ == '__main__':
     model.to(device)
 
     logger.info('Loading dataset "%s"', data_args.dataset_path)
-    train_samples = load_samples(data_args, tokenizer)
+    train_samples = load_samples(data_args, tokenizer, model_args)
     logger.info('Training set: %d samples', len(train_samples))
 
     train_dataset = FinetuneDataset(train_samples, tokenizer)
 
-    printer = MyPrinterCallback(os.path.join(proj_dir, 'tmp', 'finetune_rugpt_with_prompt_masking.loss.log'))
+    printer = MyPrinterCallback(os.path.join(training_args.output_dir, 'finetune_rugpt_with_prompt_masking.loss.log'))
     trainer = Trainer(
         model=model,
         args=training_args,
